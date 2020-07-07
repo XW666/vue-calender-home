@@ -11,4 +11,4 @@ npm install
 # develop
 npm run serve
 
-表格列表的标记，连续3个月日历的展示
+表格列表的编辑；连续3个月日历的展示；日期天数的选择
