@@ -1,0 +1,116 @@
+/* // 消息提示的样式 重置 */
+.tip-info-wrap {
+  align-items: flex-start;
+  border-radius: 0px;
+  min-width: 200px;
+  padding: 0px 20px;
+  color: #595959;
+
+  .el-icon-close {
+    right: 10px;
+  }
+
+  .iconfont {
+    margin-right: 12px;
+    margin-top: 8px;
+  }
+
+  .tip-info-content-wrap {
+    display: flex;
+  }
+
+  .tip-info-content {
+    padding: 7px 0px 6px;
+
+    .tip-info-title {
+      line-height: 22px;
+    }
+
+    .tip-info-subtitle {
+      width: 319px;
+      margin: 7px 0px 5px;
+    }
+  }
+
+  &.tip-info-wide-border {
+    .tip-info-content {
+      padding: 9px 0px 6px;
+
+      .tip-info-title {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // 正常
+  &.tip-normal-wrap {
+    border: 1px solid #138DD9;
+    background-color: #EAF5FC;
+
+    .iconfont {
+      color: #138DD9;
+    }
+
+    &.tip-info-wide-border {
+      border-right: 10px solid #138DD9;
+    }
+
+    &.tip-info-thin-border {
+      border-right: 6px solid #138DD9;
+    }
+  }
+
+  // success
+  &.tip-success-wrap {
+    border: 1px solid #6CC902;
+    background-color: #F2FAE8;
+
+    .iconfont {
+      color: #6CC902;
+    }
+
+    &.tip-info-wide-border {
+      border-right: 10px solid #6CC902;
+    }
+
+    &.tip-info-thin-border {
+      border-right: 6px solid #6CC902;
+    }
+  }
+
+  // error
+  &.tip-error-wrap {
+    border: 1px solid #E2231A;
+    background-color: #FCEBEA;
+
+    .iconfont {
+      color: #E2231A;
+    }
+
+    &.tip-info-wide-border {
+      border-right: 10px solid #E2231A;
+    }
+
+    &.tip-info-thin-border {
+      border-right: 6px solid #E2231A;
+    }
+  }
+
+  // warning 
+  &.tip-warning-wrap {
+    border: 1px solid #FF9101;
+    background-color: #FFF5E8;
+
+    .iconfont {
+      color: #FF9101;
+    }
+
+    &.tip-info-wide-border {
+      border-right: 10px solid #FF9101;
+    }
+
+    &.tip-info-thin-border {
+      border-right: 6px solid #FF9101;
+    }
+  }
+}
