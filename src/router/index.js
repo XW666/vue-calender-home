@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Days from '../views/Days.vue'
+import Upload from '../views/Upload.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -20,6 +21,11 @@ const routes = [
     path: "/Days",
     name: "Days",
     component: Days
+  },
+  {
+    path: "/Upload",
+    name: "Upload",
+    component: Upload
   }
 ];
 

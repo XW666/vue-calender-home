@@ -1,5 +1,15 @@
 <template>
   <div class="days-contaior">
+    <h1>工号范围</h1>
+    <div class="rang">
+      <label>工号范围</label>
+      <Rang-Seach
+        :displayValue1.sync="displayValue1"
+        :displayValue2.sync="displayValue2"
+        :placeholder="placeholderRang"
+        :RangOptions="RangOptions"
+      ></Rang-Seach>
+    </div>
     <div class="country">
       <VuCountryIntl v-model="countryCode" :showAreaCode="false"></VuCountryIntl>
     </div>
@@ -16,12 +26,14 @@ import DateDays from "../components/DateDays/index";
 import DataPicker from "../components/DataPicker/index";
 import NumderView from "../components/NumderView";
 import VuCountryIntl from "vue-country-intl";
+import RangSeach from "../components/RangeSeach";
 export default {
   components: {
     DateDays,
     DataPicker,
     NumderView,
-    VuCountryIntl
+    VuCountryIntl,
+    RangSeach
   },
   data() {
     return {
@@ -33,7 +45,35 @@ export default {
       dataValue1: "",
       dataValue2: "",
       hValue: "",
-      str: "54eb0dd7cda80dce666ad933f223857462b7864f"
+      displayValue1: "",
+      displayValue2: "",
+      placeholderRang: "请输入工号",
+      RangOptions: [
+        {
+          value: "A00001",
+          label: "A00001"
+        },
+        {
+          value: "A00002",
+          label: "A00002"
+        },
+        {
+          value: "A00003",
+          label: "A00003"
+        },
+        {
+          value: "A00004",
+          label: "A00004"
+        },
+        {
+          value: "A00005",
+          label: "A00005"
+        },
+        {
+          value: "A00006",
+          label: "A00006"
+        }
+      ]
     };
   },
   filters: {},
