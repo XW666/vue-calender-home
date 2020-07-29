@@ -114,3 +114,35 @@
     }
   }
 }
+//switch 开关 样式;
+.switchStyle .el-switch__label {
+  position: absolute;
+  display: none;
+  color: #fff;
+}
+
+.switchStyle .el-switch__label--left {
+  z-index: 1;
+  left: 24px;
+}
+
+.switchStyle .el-switch__label--right {
+  z-index: 1;
+  right: -8px;
+}
+
+.switchStyle .el-switch__label.is-active {
+  display: block;
+}
+
+.switchStyle .el-switch__label>span {
+  font-size: 12px;
+}
+
+.switchStyle.el-switch .el-switch__core,
+.el-switch .el-switch__label {
+  width: 45px !important;
+}
+.switchStyle.is-checked .el-switch__core .el-switch__button {
+  transform: translate3d(25px, 0px, 0px) !important;
+}
