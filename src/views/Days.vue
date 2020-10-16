@@ -19,11 +19,13 @@
     <DataPicker :selectValue.sync="dataValue" widthType="150" dateType="month" class="md-10"></DataPicker>
     <DataPicker :selectValue.sync="dataValue1" widthType="250" dateType="daterange" class="md-10"></DataPicker>
     <DataPicker :selectValue.sync="dataValue2" widthType="250" dateType="monthrange" class="md-10"></DataPicker>
+    <DateQuarter :daysValue.sync="dataValue3" :width="150"></DateQuarter>
   </div>
 </template>
 <script>
 import DateDays from "../components/DateDays/index";
 import DataPicker from "../components/DataPicker/index";
+import DateQuarter from '../components/DateQuarter/index'
 import NumderView from "../components/NumderView";
 import VuCountryIntl from "vue-country-intl";
 import RangSeach from "../components/RangeSeach";
@@ -33,7 +35,8 @@ export default {
     DataPicker,
     NumderView,
     VuCountryIntl,
-    RangSeach
+    RangSeach,
+    DateQuarter
   },
   data() {
     return {
@@ -44,6 +47,7 @@ export default {
       dataValue: "",
       dataValue1: "",
       dataValue2: "",
+      dataValue3:'',
       hValue: "",
       displayValue1: "",
       displayValue2: "",
