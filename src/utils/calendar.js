@@ -1,20 +1,5 @@
 
 
-const englishMonthList = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sept',
-  'Oct',
-  'Nov',
-  'Dec'
-];
-
 const canlenHoilday = [
   { date: "2020/01/01", publicHolidayName: "元旦", dayLisy: [] },
   { date: "2020/01/24", publicHolidayName: "除夕", dayLisy: [] },
@@ -93,11 +78,6 @@ const getCanlenDate = (data) => {
 
   let monthDayNum = 42
 
-  // if (weekDay == 5 || weekDay == 6) {
-  //   monthDayNum = 42;
-  // } else {
-  //   monthDayNum = 35;
-  // }
 
   for (let i = 0; i < monthDayNum; i++) {
     let dataTime = new Date(startTime + i * 24 * 60 * 60 * 1000);
@@ -123,21 +103,49 @@ const getCanlenDate = (data) => {
 
   return calendatArr;
 }
+
+
+//显示上周、本周、下周
+const getDashCalender = data => {
+
+  const calendatArr = []
+
+  const currentFirstDay = new Date()
+
+  // 获取当前天星期几
+  const weekNum = currentFirstDay.getDay()
+  const weekDay = weekNum > 0 ? weekNum : 7
+  // 获取上周最后一天
+  const startTime = currentFirstDay - (weekDay + 6) * 24 * 60 * 60 * 1000
+
+  const monthDayNum = 21
+
+  for (let i = 0; i < monthDayNum; i++) {
+    const dataTime = new Date(startTime + i * 24 * 60 * 60 * 1000)
+    const { year, month } = getNewDate(dataTime)
+    const todata = timestampToDate(dataTime)
+
+    const noMonth = isCurMonth(data.year, data.month, dataTime)
+    const day = dataTime.getDate()
+    calendatArr.push({
+      todata: todata,//年/月/日
+      date: dataTime,//完整日期
+      year: year,//年
+      month: month + 1,//月
+      day: day,//日
+      chickMonth: noMonth, //是否是单月日期
+    })
+  }
+
+  return calendatArr
+}
+
 //是否是当月
 const isCurMonth = (currentYear, currentMonth, data) => {
   let { year, month } = getNewDate(data);
   let m = month;
   return currentYear == year && m == currentMonth;
 };
-const englishMonth = (month) => {
-  let engMonth;
-
-  englishMonthList.map(() => {
-    engMonth = englishMonthList[month]
-  });
-
-  return engMonth
-}
 
 const formatDate = (date) => {
   date = Number(date);
@@ -150,8 +158,8 @@ const formatDate = (date) => {
 export {
   getNewDate,
   getDate,
-  englishMonth,
   formatDate,
   getCanlenDate,
-  timestampToDate
+  timestampToDate,
+  getDashCalender
 }

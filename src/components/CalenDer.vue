@@ -108,7 +108,8 @@
 
 <script>
 import * as utils from "../utils/calendar";
-const { year, month } = utils.getNewDate(new Date());
+const { year, month,day } = utils.getNewDate(new Date());
+import * as calenderInfo from '../utils/calenderConfig'
 
 export default {
   name: "cc-calendar",
@@ -305,7 +306,10 @@ export default {
       this.$emit("radioChange", val);
     }
   },
-  created() {}
+  created() {
+    // /获取当前日期对应的农历
+    	const lunar = calenderInfo.solar2lunar(year, month, day)
+  }
 };
 </script>
 
