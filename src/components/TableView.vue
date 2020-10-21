@@ -2,7 +2,9 @@
   <div>
     <el-table
       :row-class-name="tableRowClassName"
+      :span-method="objectSpanMethod"
       v-loading="options.loading"
+      v-loadmore="loadMore"
       :data="tableList"
       :max-height="options.maxHeight"
       :stripe="options.stripe"
@@ -17,12 +19,19 @@
       @selection-change="selectChange"
       @row-click="rowClick"
       @row-dblclick="rowDblclick"
+      @cell-mouse-enter="handleMouse"
+      @cell-mouse-leave="handleMouseLeve"
     >
       <!-- 列样式调整 -->
       <!-- <el-table-column width="10" fixed="left"></el-table-column> -->
 
       <!-- 多选框 -->
-      <el-table-column width="45" type="selection" v-if="options.select" fixed="left"></el-table-column>
+      <el-table-column
+        width="45"
+        type="selection"
+        v-if="options.select"
+        fixed="left"
+      ></el-table-column>
 
       <!-- hover 序号会有多选框 -->
       <el-table-column width="45" fixed="left" v-if="options.hoverSelect">
@@ -37,15 +46,26 @@
           </div>
         </template>
         <template slot-scope="scope">
-          <div class="el-checkbox-wrap" :class="{ 'el-checkbox-hide': scope.row.checkedStatus }">
+          <div
+            class="el-checkbox-wrap"
+            :class="{ 'el-checkbox-hide': scope.row.checkedStatus }"
+          >
             <span class="el-checkbo-title">{{ scope.$index + 1 }}</span>
-            <el-checkbox class="el-checkbox" v-model="scope.row.checkedStatus"></el-checkbox>
+            <el-checkbox
+              class="el-checkbox"
+              v-model="scope.row.checkedStatus"
+            ></el-checkbox>
           </div>
         </template>
       </el-table-column>
 
       <!-- 序号 -->
-      <el-table-column v-if="options.indexNum" type="index" label="序号" fixed="left"></el-table-column>
+      <el-table-column
+        v-if="options.indexNum"
+        type="index"
+        label="序号"
+        fixed="left"
+      ></el-table-column>
 
       <!-- 列 -->
       <div v-for="(item, index) in columns" :key="index">
@@ -58,7 +78,12 @@
           >
             <template slot-scope="scope">
               <template v-if="item.render">
-                <ExpandDom :column="item" :row="scope" :render="item.render" :index="index" />
+                <ExpandDom
+                  :column="item"
+                  :row="scope"
+                  :render="item.render"
+                  :index="index"
+                />
               </template>
               <template v-else>
                 <span v-if="!item.formatter">{{ scope.row[item.prop] }}</span>
@@ -100,7 +125,15 @@
                   clearable
                   v-model="scope.row[item.prop]"
                   :placeholder="item.placeholder"
-                  @blur="inputBlue(item.required, scope.row[item.prop], item.prop, scope.row, item.language)"
+                  @blur="
+                    inputBlue(
+                      item.required,
+                      scope.row[item.prop],
+                      item.prop,
+                      scope.row,
+                      item.language
+                    )
+                  "
                 ></el-input>
               </template>
               <template v-else>
@@ -114,23 +147,38 @@
                   <span
                     class="ellipsis"
                     v-show="!scope.row.edit[item.prop]"
-                    @click=";(scope.row.edit[item.prop] = true), (scope.row.isEdit = true)"
-                  >{{ scope.row[item.prop] }}</span>
+                    @click="
+                      (scope.row.edit[item.prop] = true),
+                        (scope.row.isEdit = true)
+                    "
+                    >{{ scope.row[item.prop] }}</span
+                  >
                 </el-tooltip>
                 <el-input
                   v-show="scope.row.edit[item.prop]"
                   size="mini"
                   :class="{ inputPrompt: scope.row[item.prop + 'Show'] }"
                   clearable
-                  @blur="inputBlue(item.required, scope.row[item.prop], item.prop, scope.row, item.language)"
+                  @blur="
+                    inputBlue(
+                      item.required,
+                      scope.row[item.prop],
+                      item.prop,
+                      scope.row,
+                      item.language
+                    )
+                  "
                   v-model="scope.row[item.prop]"
                   :placeholder="item.placeholder"
                 ></el-input>
               </template>
               <div class="popover-put" v-show="scope.row[item.prop + 'Show']">
                 <p class="el-popconfirm__main">
-                  <i class="el-popconfirm__icon el-icon-info" style="color: red;"></i>
-                  {{ scope.row[item.prop + 'Name'] }}
+                  <i
+                    class="el-popconfirm__icon el-icon-info"
+                    style="color: red;"
+                  ></i>
+                  {{ scope.row[item.prop + "Name"] }}
                 </p>
               </div>
             </template>
@@ -150,9 +198,26 @@
                 :placeholder="item.placeholder"
                 class="table-select"
                 size="mini"
-                @visible-change="selectInputBlue($event,item.required, scope.row[item.prop], item.prop, scope.row)"
-                @change="selectTypeChange(scope.row[item.prop], scope.row, scope.$index, item.prop)"
-                :style="{ width: item.selectWidth ? item.selectWidth + 'px' : '100%' }"
+                @visible-change="
+                  selectInputBlue(
+                    $event,
+                    item.required,
+                    scope.row[item.prop],
+                    item.prop,
+                    scope.row
+                  )
+                "
+                @change="
+                  selectTypeChange(
+                    scope.row[item.prop],
+                    scope.row,
+                    scope.$index,
+                    item.prop
+                  )
+                "
+                :style="{
+                  width: item.selectWidth ? item.selectWidth + 'px' : '100%'
+                }"
               >
                 <el-option
                   v-for="(option, index) in item.selectList"
@@ -163,8 +228,11 @@
               </el-select>
               <div class="popover-put" v-show="scope.row[item.prop + 'Show']">
                 <p class="el-popconfirm__main">
-                  <i class="el-popconfirm__icon el-icon-info" style="color: red;"></i>
-                  {{ scope.row[item.prop + 'Name'] }}
+                  <i
+                    class="el-popconfirm__icon el-icon-info"
+                    style="color: red;"
+                  ></i>
+                  {{ scope.row[item.prop + "Name"] }}
                 </p>
               </div>
             </template>
@@ -184,7 +252,9 @@
                 active-text="开"
                 inactive-color="#D9D9D9"
                 inactive-text="关"
-                @change="switchChange(scope.row[item.prop], scope.row, scope.$index)"
+                @change="
+                  switchChange(scope.row[item.prop], scope.row, scope.$index)
+                "
               ></el-switch>
             </template>
           </el-table-column>
@@ -199,7 +269,12 @@
           >
             <template slot-scope="scope">
               <template v-if="item.render">
-                <render-button :item="item" :row="scope.row" :render="item.render" :index="index"></render-button>
+                <render-button
+                  :item="item"
+                  :row="scope.row"
+                  :render="item.render"
+                  :index="index"
+                ></render-button>
               </template>
 
               <template v-else>
@@ -217,7 +292,11 @@
       @size-change="pageSizeChange"
       @current-change="pageIndexChange"
       :page-size="page.pageSize"
-      :page-sizes="page.pageSizeArr && page.pageSizeArr.length > 0 ? page.pageSizeArr : [10, 20, 50]"
+      :page-sizes="
+        page.pageSizeArr && page.pageSizeArr.length > 0
+          ? page.pageSizeArr
+          : [10, 20, 50]
+      "
       :current-page="page.pageIndex"
       layout="total,sizes, prev, pager, next,jumper"
       :total="page.total"
@@ -269,6 +348,18 @@ export default {
       default: () => {
         return {};
       }
+    },
+    // 表格合并行后，单元格移入事件
+    setHandleMouse: {
+      type: Function
+    },
+    // 表格合并行的规则
+    setSpanMethod: {
+      type: Function
+    },
+    // 合并行后，点击选中事件
+    changeSelection: {
+      type: Function
     },
     // 表格参数
     options: {
@@ -346,7 +437,9 @@ export default {
       isIndeterminate: false,
       totalCheckedStatus: false,
       interval: null,
-      tableScrollTop: 0
+      tableScrollTop: 0,
+      rowIndex: "-1", // 合并行当前索引
+      hoverOrderArr: [] // 当前移入行的索引集合
     };
   },
   watch: {
@@ -388,7 +481,25 @@ export default {
       this.options
     );
   },
+  directives: {
+    loadmore: {
+      bind(el, binding) {
+        const selectWrap = el.querySelector(".el-table__body-wrapper");
+        selectWrap.addEventListener("scroll", function() {
+          // scrollHeight：指元素的总高度，包含滚动条中的内容
+          // scrollTop：当元素出现滚动条时，内容向上滚动的距离
+          // clientHeight：元素可视区域的大小
+          const scrollDistance =
+            this.scrollHeight - this.scrollTop - this.clientHeight;
 
+          if (Math.floor(scrollDistance) <= 0 && this.scrollTop > 0) {
+            // 到底了
+            binding.value();
+          }
+        });
+      }
+    }
+  },
   filters: {
     ellipsis(value) {
       const width = getTextWidth(value);
@@ -426,9 +537,30 @@ export default {
   },
   mounted() {},
   methods: {
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      // 合并行
+      if (this.options.spanmethod) {
+        return this.setSpanMethod(rowIndex, columnIndex);
+      }
+    },
     tableRowClassName({ row, rowIndex }) {
       // 把每一行的索引放进row
       row.rowIndex = rowIndex;
+      // 按照条件给tr添加class名字
+      if (this.options.trAddClass) {
+        if (Number(row.state) === Number(this.options.trAddClass.keyVal)) {
+          return this.options.trAddClass.addClassName;
+        }
+      }
+      if (this.options.spanmethod) {
+        // 合并行后添加class
+        let className = "row-no-background";
+
+        if (this.hoverOrderArr.includes(rowIndex)) {
+          className = "row-no-background success-row";
+        }
+        return className;
+      }
     },
     headerStyle({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0 || columnIndex === 1) {
@@ -455,6 +587,21 @@ export default {
     // 表格双击的时候
     rowDblclick(row) {
       this.$emit("rowDblclick", row);
+    },
+    // 单元格移入事件
+    handleMouse(row, column, cell, event) {
+      if (this.options.spanmethod) {
+        this.rowIndex = row.rowIndex;
+        this.hoverOrderArr = this.setHandleMouse(row);
+      }
+    },
+
+    // 单元格移除事件
+    handleMouseLeve() {
+      if (this.options.spanmethod) {
+        this.hoverOrderArr = [];
+        this.rowIndex = "-1";
+      }
     },
     inputBlue(required, value, pro, data, language) {
       // 输入框失去焦点事件
@@ -508,7 +655,12 @@ export default {
       ///分页
       this.$emit("pageIndexChange", val);
     },
-
+    loadMore() {
+      // 滚动事件
+      if (this.page.load) {
+        this.pageIndexChange();
+      }
+    },
     // 假如是hover 上去的复选框 ， 头部全选的事件
     allCheckboxChange(value) {
       if (!this.isIndeterminate && this.totalCheckedStatus) {
@@ -543,6 +695,13 @@ export default {
   background-color: #eaf5fc !important;
 }
 .el-table__body tbody tr.hover-row > td {
+  background-color: #eaf5fc !important;
+}
+.el-table__body tbody tr.row-no-background > td {
+  background: transparent !important;
+}
+
+.el-table__body tbody tr.success-row > td {
   background-color: #eaf5fc !important;
 }
 .el-table th.el-table-column--selection {
