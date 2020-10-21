@@ -54,6 +54,7 @@
             <el-checkbox
               class="el-checkbox"
               v-model="scope.row.checkedStatus"
+              @change="options.spanmethod && toggleSelection($event, scope.row)"
             ></el-checkbox>
           </div>
         </template>
@@ -639,7 +640,10 @@ export default {
         }
       }
     },
-
+    // 合并行后，点击选中，默认合并的其他行数据选中状态
+    toggleSelection(e, row) {
+      this.changeSelection(e, row);
+    },
     switchChange(prop, data, index) {
       data.isEdit = true;
     },

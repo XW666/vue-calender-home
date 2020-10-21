@@ -124,8 +124,8 @@ export default {
         }
       ],
       options: {
-        hoverSelect: false,
-        select: true,
+        hoverSelect: true,
+        select: false,
         stripe: true,
         border: true,
         spanmethod: true, // 是否合并表格行
