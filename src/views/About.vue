@@ -22,17 +22,17 @@ const { year, month, day } = utils.getNewDate(new Date());
 
 export default {
   components: {
-    CalenDer
+    CalenDer,
   },
   data() {
     return {
       time: { year, month, day },
       timeDate: {
         yearValue: year,
-        monthValue: month + 1
+        monthValue: month + 1,
       },
       calendarList: [], // 所有日期
-      checkCalender: [] //选中的日期
+      checkCalender: [], //选中的日期
     };
   },
   created() {
@@ -43,7 +43,7 @@ export default {
     rightDay() {
       const right = {
         year: this.time.year,
-        month: this.time.month + 1
+        month: this.time.month + 1,
       };
       if (this.time.month === 11) {
         right.year = this.time.year + 1;
@@ -54,7 +54,7 @@ export default {
     leftDay() {
       const left = {
         year: this.time.year,
-        month: this.time.month - 1
+        month: this.time.month - 1,
       };
       if (this.time.month === 0) {
         left.year = this.time.year - 1;
@@ -70,7 +70,7 @@ export default {
       // 当前月日历
       const dataCen = utils.getCanlenDate({
         year: this.time.year,
-        month: this.time.month
+        month: this.time.month,
       });
       // 上一个月日历
       const dataLeft = utils.getCanlenDate(left);
@@ -81,17 +81,17 @@ export default {
         {
           year: left.year,
           month: left.month + 1,
-          data: dataLeft
+          data: dataLeft,
         },
         {
           year: this.time.year,
           month: this.time.month + 1,
-          data: dataCen
+          data: dataCen,
         },
         {
           year: right.year,
           month: right.month + 1,
-          data: dataRight
+          data: dataRight,
         }
       );
 
@@ -119,8 +119,8 @@ export default {
         if (startList.start) {
           this.handleCanleReq();
         }
-        this.calendarList.map(item => {
-          item.data.map(child => {
+        this.calendarList.map((item) => {
+          item.data.map((child) => {
             if (child.todata === startList.data.todata) {
               child.clickDay = true;
             }
@@ -133,66 +133,116 @@ export default {
         const endData = endList.data;
         let startIndex = startData.day;
         let endIndex = endData.day;
-        if (startData.month === endData.month) {
-          // 判断结束日期小于开始日期则自动颠倒过来
-          if (startData.day > endData.day) {
-            startIndex = endData.day;
-            endIndex = startData.day;
-          }
-          this.calendarList.map(item => {
-            item.data.map(child => {
-              if (child.month === startData.month) {
-                if (child.day >= startIndex && child.day <= endIndex) {
-                  child.clickDay = true;
+        const startYear = startData.year;
+        const endYear = endData.year;
+        if (startYear === endYear) {
+          //在同一年
+          if (startData.month === endData.month) {
+            // 判断结束日期小于开始日期则自动颠倒过来
+            if (startData.day > endData.day) {
+              startIndex = endData.day;
+              endIndex = startData.day;
+            }
+            this.calendarList.map((item) => {
+              item.data.map((child) => {
+                if (child.month === startData.month) {
+                  if (child.day >= startIndex && child.day <= endIndex) {
+                    child.clickDay = true;
+                  }
                 }
-              }
-              return item;
-            });
-          });
-        } else {
-          // 不在同一个月
-
-          if (startData.month > endData.month) {
-            // 是否跨2个月
-            this.calendarList.map(item => {
-              item.data.map(child => {
-                if (
-                  child.month < startData.month &&
-                  child.month > endData.month
-                ) {
-                  child.clickDay = true;
-                }
-                if (child.month === endData.month && child.day >= endIndex) {
-                  child.clickDay = true;
-                }
-                if (
-                  child.month === startData.month &&
-                  child.day <= startIndex
-                ) {
-                  child.clickDay = true;
-                }
-
                 return item;
               });
             });
           } else {
-            // 是否跨2个月
-            this.calendarList.map(item => {
-              item.data.map(child => {
-                if (
-                  child.month < endData.month &&
-                  child.month > startData.month
-                ) {
-                  child.clickDay = true;
-                }
-                if (child.month === endData.month && child.day <= endIndex) {
-                  child.clickDay = true;
-                }
+            // 不在同一个月
+            if (startData.month > endData.month) {
+              // 是否跨2个月
+
+              this.calendarList.map((item) => {
+                item.data.map((child) => {
+                  if (
+                    child.month < startData.month &&
+                    child.month > endData.month
+                  ) {
+                    child.clickDay = true;
+                  }
+                  if (child.month === endData.month && child.day >= endIndex) {
+                    child.clickDay = true;
+                  }
+                  if (
+                    child.month === startData.month &&
+                    child.day <= startIndex
+                  ) {
+                    child.clickDay = true;
+                  }
+
+                  return item;
+                });
+              });
+            } else {
+              // 是否跨2个月
+              this.calendarList.map((item) => {
+                item.data.map((child) => {
+                  if (
+                    child.month < endData.month &&
+                    child.month > startData.month
+                  ) {
+                    child.clickDay = true;
+                  }
+                  if (child.month === endData.month && child.day <= endIndex) {
+                    child.clickDay = true;
+                  }
+                  if (
+                    child.month === startData.month &&
+                    child.day >= startIndex
+                  ) {
+                    child.clickDay = true;
+                  }
+                  return item;
+                });
+              });
+            }
+          }
+        } else {
+          //不在同一年
+          if (startData.month > endData.month) {
+            // 开始月份大于结束月份
+            this.calendarList.map((item) => {
+              item.data.map((child) => {
                 if (
                   child.month === startData.month &&
-                  child.day >= startIndex
+                  child.year === startYear
                 ) {
+                  if (child.day >= startIndex) {
+                    child.clickDay = true;
+                  }
+                }
+                if (child.month <= endData.month && child.year === endYear) {
+                  if (child.day <= endIndex) {
+                    child.clickDay = true;
+                  }
+                }
+                return item;
+              });
+            });
+          } else {
+            this.calendarList.map((item) => {
+              item.data.map((child) => {
+                if (
+                  child.month === startData.month &&
+                  child.year === startYear
+                ) {
+                  if (child.day <= startIndex) {
+                    child.clickDay = true;
+                  }
+                }
+                if (child.month < startData.month && child.year === startYear) {
                   child.clickDay = true;
+                }
+                if (child.month === endData.month && child.year === endYear) {
+                  if (child.day >= endIndex) {
+                    child.clickDay = true;
+                  }
                 }
                 return item;
               });
@@ -203,8 +253,8 @@ export default {
     },
     handleCanleReq() {
       // 数据还原
-      this.calendarList.map(item => {
-        item.data.map(child => {
+      this.calendarList.map((item) => {
+        item.data.map((child) => {
           child.clickDay = false;
           return child;
         });
@@ -219,8 +269,8 @@ export default {
     radioChange(val) {
       // 单选
       this.radioValue = val;
-      this.calendarList.map(item => {
-        item.data.map(child => {
+      this.calendarList.map((item) => {
+        item.data.map((child) => {
           if (child.clickDay) {
             // if (this.calendarLsOfficial[child.todata]) {
             //   child.dayType = val;
@@ -236,7 +286,7 @@ export default {
         });
         return item;
       });
-    }
-  }
+    },
+  },
 };
 </script>
